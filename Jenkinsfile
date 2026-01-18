@@ -40,13 +40,29 @@ node {
         recordCoverage tools: [[parser: 'COBERTURA', pattern: 'coverage.xml']]
     }
 
-    stage('Performance') {
-        echo 'Datos de rendimiento simulados'
-        bat 'echo timeStamp,elapsed,label,responseCode,responseMessage,success,bytes,sentBytes,Latency,Connect>performance.csv'
-        bat 'echo 1,120,add,200,OK,true,512,128,120,10>>performance.csv'
-        bat 'echo 2,90,add,200,OK,true,512,128,90,8>>performance.csv'
-        bat 'echo 3,110,add,200,OK,true,512,128,110,9>>performance.csv'
-        perfReport sourceDataFiles: 'performance.csv'
+ stage('Performance - JMeter') {
+    steps {
+        echo 'Ejecutando pruebas de rendimiento con JMeter'
+
+        bat '''
+        start /B python app\\api.py
+        timeout /T 5
+        '''
+
+        bat '''
+        "%JMETER_HOME%\\bin\\jmeter.bat" ^
+          -n ^
+          -t test\\jmeter\\flask.jmx ^
+          -l performance.csv ^
+          -e -o jmeter-report
+        '''
     }
+    post {
+        always {
+            perfReport sourceDataFiles: 'performance.csv'
+        }
+    }
+}
+
 
 }
