@@ -31,7 +31,7 @@ pipeline {
 
         stage('Integration Tests') {
             steps {
-                echo 'Pruebas de integración'
+                echo 'Pruebas de integración (pueden fallar si no hay servicios levantados)'
                 bat 'python -m pytest test\\rest || exit 0'
             }
         }
@@ -43,28 +43,24 @@ pipeline {
             }
             post {
                 always {
-                    recordIssues(
-                        tools: [flake8(pattern: 'flake8.txt')]
-                    )
+                    recordIssues tools: [pyLint(pattern: 'flake8.txt')]
                 }
             }
         }
 
-          stage('Security Analysis - Bandit') {
+        stage('Security Analysis - Bandit') {
             steps {
                 echo 'Análisis de seguridad con Bandit'
                 bat 'python -m bandit -r app -f json -o bandit.json || exit 0'
             }
             post {
                 always {
-                    recordIssues(
-                        tools: [issues(pattern: 'bandit.json')]
-                    )
+                    recordIssues tools: [bandit(pattern: 'bandit.json')]
                 }
             }
         }
 
-           stage('Coverage') {
+        stage('Coverage') {
             steps {
                 echo 'Cálculo de cobertura'
                 bat 'python -m coverage run -m pytest || exit 0'
@@ -72,23 +68,20 @@ pipeline {
             }
             post {
                 always {
-                    recordCoverage(
-                        tools: [[parser: 'COBERTURA', pattern: 'coverage.xml']]
-                    )
+                    recordCoverage tools: [[parser: 'COBERTURA', pattern: 'coverage.xml']]
                 }
             }
         }
 
-
-                    stage('Performance') {
+        stage('Performance') {
             steps {
                 echo 'Generando datos de rendimiento simulados'
                 bat '''
-                echo timeStamp,elapsed,label,responseCode,success > performance.csv
-                echo 1,120,add,200,true >> performance.csv
-                echo 2,90,add,200,true >> performance.csv
-                echo 3,110,add,200,true >> performance.csv
-                '''
+echo timeStamp,elapsed,label,responseCode,success>performance.csv
+echo 1,120,add,200,true>>performance.csv
+echo 2,90,add,200,true>>performance.csv
+echo 3,110,add,200,true>>performance.csv
+'''
             }
             post {
                 always {
@@ -96,7 +89,5 @@ pipeline {
                 }
             }
         }
-
-
     }
 }
