@@ -13,11 +13,11 @@ stage('Setup Python') {
 stage('Start Flask API') {
     echo 'Arrancando API Flask en background (puerto 9090)'
     bat '''
-    set FLASK_ENV=development
     start /B python -c "from app.api import api_application; api_application.run(host='127.0.0.1', port=9090)"
-    timeout /T 5
+    ping 127.0.0.1 -n 6 > nul
     '''
 }
+
 
 stage('Unit Tests') {
     echo 'Pruebas unitarias'
