@@ -64,7 +64,7 @@ pipeline {
             }
         }
 
-        stage('Coverage') {
+           stage('Coverage') {
             steps {
                 echo 'Cálculo de cobertura'
                 bat 'python -m coverage run -m pytest || exit 0'
@@ -72,10 +72,13 @@ pipeline {
             }
             post {
                 always {
-                    cobertura coberturaReportFile: 'coverage.xml'
+                    recordCoverage(
+                        tools: [[parser: 'COBERTURA', pattern: 'coverage.xml']]
+                    )
                 }
             }
         }
+
 
         stage('Performance (placeholder académico)') {
             steps {
