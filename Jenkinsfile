@@ -80,14 +80,14 @@ pipeline {
         }
 
 
-        stage('Performance (placeholder académico)') {
+             stage('Performance (placeholder académico)') {
             steps {
                 echo 'Generando datos de rendimiento simulados'
                 bat '''
-                echo timeStamp,elapsed,label > performance.csv
-                echo 1,120,add >> performance.csv
-                echo 2,90,add >> performance.csv
-                echo 3,110,add >> performance.csv
+                echo timeStamp,elapsed,label,responseCode > performance.csv
+                echo 1,120,add,200 >> performance.csv
+                echo 2,90,add,200 >> performance.csv
+                echo 3,110,add,200 >> performance.csv
                 '''
             }
             post {
@@ -96,5 +96,6 @@ pipeline {
                 }
             }
         }
+
     }
 }
