@@ -31,7 +31,7 @@ pipeline {
 
         stage('Integration Tests') {
             steps {
-                echo 'Pruebas de integración (pueden fallar si no hay servicios levantados)'
+                echo 'Pruebas de integración (pueden fallar si no hay servicios)'
                 bat 'python -m pytest test\\rest || exit 0'
             }
         }
@@ -55,7 +55,7 @@ pipeline {
             }
             post {
                 always {
-                    recordIssues tools: [bandit(pattern: 'bandit.json')]
+                    recordIssues tools: [issues(pattern: 'bandit.json')]
                 }
             }
         }
