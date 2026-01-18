@@ -42,10 +42,11 @@ node {
 
     stage('Performance') {
         echo 'Datos de rendimiento simulados'
-        bat 'echo timeStamp,elapsed,label,responseCode,success,Latency>performance.csv'
-        bat 'echo 1,120,add,200,true,120>>performance.csv'
-        bat 'echo 2,90,add,200,true,90>>performance.csv'
-        bat 'echo 3,110,add,200,true,110>>performance.csv'
+        bat 'echo timeStamp,elapsed,label,responseCode,responseMessage,success,bytes,sentBytes,Latency,Connect>performance.csv'
+        bat 'echo 1,120,add,200,OK,true,512,128,120,10>>performance.csv'
+        bat 'echo 2,90,add,200,OK,true,512,128,90,8>>performance.csv'
+        bat 'echo 3,110,add,200,OK,true,512,128,110,9>>performance.csv'
         perfReport sourceDataFiles: 'performance.csv'
     }
+
 }
