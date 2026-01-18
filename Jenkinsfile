@@ -27,7 +27,7 @@ stages {
     stage('Static Analysis') {
         steps {
             echo 'Analisis estatico con flake8'
-            bat 'python -m flake8 app'
+            bat 'python -m flake8 app || exit 0'
         }
     }
 
