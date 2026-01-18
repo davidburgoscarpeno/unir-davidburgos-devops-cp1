@@ -3,45 +3,90 @@ pipeline {
 
     stages {
 
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Setup Python') {
             steps {
-                echo 'Instalando dependencias Python'
+                echo 'Instalando dependencias'
+                bat 'python -m pip install --upgrade pip'
                 bat 'python -m pip install pytest flask flake8 bandit coverage'
             }
         }
 
         stage('Unit Tests') {
             steps {
-                echo 'Ejecutando pruebas unitarias'
-                bat 'python -m pytest test\\unit'
+                echo 'Pruebas unitarias'
+                bat 'python -m pytest test\\unit --junitxml=unit-tests.xml'
+            }
+            post {
+                always {
+                    junit 'unit-tests.xml'
+                }
             }
         }
 
         stage('Integration Tests') {
             steps {
-                echo 'Ejecutando pruebas de integracion'
+                echo 'Pruebas de integración'
                 bat 'python -m pytest test\\rest || exit 0'
             }
         }
 
-        stage('Static Analysis') {
+        stage('Static Analysis - Flake8') {
             steps {
-                echo 'Analisis estatico con flake8'
-                bat 'python -m flake8 app || exit 0'
+                echo 'Análisis estático con Flake8'
+                bat 'python -m flake8 app --format=pylint --output-file=flake8.txt || exit 0'
+            }
+            post {
+                always {
+                    recordIssues tools: [pyLint(pattern: 'flake8.txt')]
+                }
             }
         }
 
-        stage('Security Tests') {
+        stage('Security Analysis - Bandit') {
             steps {
-                echo 'Analisis de seguridad con bandit'
-                bat 'python -m bandit -r app || exit 0'
+                echo 'Análisis de seguridad con Bandit'
+                bat 'python -m bandit -r app -f json -o bandit.json || exit 0'
+            }
+            post {
+                always {
+                    recordIssues tools: [bandit(pattern: 'bandit.json')]
+                }
             }
         }
 
         stage('Coverage') {
             steps {
-                echo 'Calculo de cobertura'
+                echo 'Cálculo de cobertura'
                 bat 'python -m coverage run -m pytest || exit 0'
+                bat 'python -m coverage xml'
+            }
+            post {
+                always {
+                    cobertura coberturaReportFile: 'coverage.xml'
+                }
+            }
+        }
+
+        stage('Performance (placeholder académico)') {
+            steps {
+                echo 'Generando datos de rendimiento simulados'
+                bat '''
+                echo timeStamp,elapsed,label > performance.csv
+                echo 1,120,add >> performance.csv
+                echo 2,90,add >> performance.csv
+                echo 3,110,add >> performance.csv
+                '''
+            }
+            post {
+                always {
+                    perfReport sourceDataFiles: 'performance.csv'
+                }
             }
         }
     }
