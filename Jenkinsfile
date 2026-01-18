@@ -1,7 +1,6 @@
 pipeline {
 agent any
 
-```
 stages {
 
     stage('Setup Python') {
@@ -49,13 +48,11 @@ stages {
         }
     }
 }
-```
 
 }
 pipeline {
 agent any
 
-```
 stages {
 
     stage('Setup Python') {
@@ -103,6 +100,5 @@ stages {
         }
     }
 }
-```
 
 }
