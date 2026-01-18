@@ -43,7 +43,9 @@ pipeline {
             }
             post {
                 always {
-                    recordIssues tools: [pyLint(pattern: 'flake8.txt')]
+                    recordIssues(
+                        tools: [flake8(pattern: 'flake8.txt')]
+                    )
                 }
             }
         }
@@ -55,7 +57,9 @@ pipeline {
             }
             post {
                 always {
-                    recordIssues tools: [bandit(pattern: 'bandit.json')]
+                    recordIssues(
+                        tools: [bandit(pattern: 'bandit.json')]
+                    )
                 }
             }
         }
