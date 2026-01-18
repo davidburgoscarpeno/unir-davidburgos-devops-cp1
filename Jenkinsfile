@@ -50,7 +50,7 @@ pipeline {
             }
         }
 
-        stage('Security Analysis - Bandit') {
+          stage('Security Analysis - Bandit') {
             steps {
                 echo 'Análisis de seguridad con Bandit'
                 bat 'python -m bandit -r app -f json -o bandit.json || exit 0'
@@ -58,7 +58,7 @@ pipeline {
             post {
                 always {
                     recordIssues(
-                        tools: [bandit(pattern: 'bandit.json')]
+                        tools: [issues(pattern: 'bandit.json')]
                     )
                 }
             }
