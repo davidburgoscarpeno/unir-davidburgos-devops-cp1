@@ -77,11 +77,11 @@ pipeline {
             steps {
                 echo 'Generando datos de rendimiento simulados'
                 bat '''
-echo timeStamp,elapsed,label,responseCode,success>performance.csv
-echo 1,120,add,200,true>>performance.csv
-echo 2,90,add,200,true>>performance.csv
-echo 3,110,add,200,true>>performance.csv
-'''
+        echo timeStamp,elapsed,label,responseCode,success,Latency>performance.csv
+        echo 1,120,add,200,true,120>>performance.csv
+        echo 2,90,add,200,true,90>>performance.csv
+        echo 3,110,add,200,true,110>>performance.csv
+        '''
             }
             post {
                 always {
@@ -89,5 +89,6 @@ echo 3,110,add,200,true>>performance.csv
                 }
             }
         }
+
     }
 }
